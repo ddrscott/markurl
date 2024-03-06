@@ -1,0 +1,32 @@
+#!/bin/bash
+# Check if exactly 3 arguments are provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <format> <selector> <url>"
+    exit 1
+fi
+
+# Set the API base URL if not set
+if [ -z "$API_BASE" ]; then
+    API_BASE="https://markurl.dataturd.com"
+fi
+
+# Extract arguments
+format=$1
+selector=$2
+url=$3
+# Encode the selector for URL
+encoded_selector=$(echo $selector | jq -sRr @uri)
+# Extract the hostname and path from the URL
+hostname=$(echo $url | awk -F/ '{print $3}')
+path=$(echo $url | awk -F/ '{for (i=4; i<=NF; i++) printf "/%s", $i}')
+# Construct the API endpoint URL
+api_url="${API_BASE}/$format/$encoded_selector/$hostname$path"
+# Use curl to make a request to the API
+response=$(curl -s "$api_url")
+# Check if the response is empty
+if [ -z "$response" ]; then
+    echo "No response from API or an error occurred."
+    exit 1
+fi
+# Output the response
+echo "$response"
