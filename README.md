@@ -1,47 +1,61 @@
 # Markurl
 
 > Mar-curl :: sounds like marker + mar-girl. Good luck pronouncing it.
+Markurl is a service designed to fetch the contents of a URL in either Markdown or HTML format. It utilizes Playwright to render and extract content from web pages, and offers a simple API for users to specify the output format and CSS selector for content extraction.
 
-Get contents of a URL as Markdown or HTML.
+## Getting Started
 
+### Prerequisites
+- Node.js (v14 or newer)
+- Docker (for Docker-based installation)
 
-## Example
-
+### Cloning the Repository
 ```sh
-# Get contents of https://playwright.dev/python/docs/pages in Markdown format using 'main' query parameter.
-curl https://localhost:8080/markdown/main/playwright.dev/python/docs/pages
-
-# Get contents of https://playwright.dev/python/docs/pages in html format using 'main' query parameter.
-curl https://localhost:8080/html/main/playwright.dev/python/docs/pages
+git clone https://github.com/yourusername/markurl.git
+cd markurl
 ```
 
-## API Options
+## Installation
+After cloning the repository, install the necessary dependencies by running:
+```sh
+npm install
+```
+This will install Express, Playwright, and Turndown among other dependencies as specified in `package.json`.
 
-Path convention:
-- **first segment**: output format, markdown or html
-- **second segment**: CSS selector to find the main content
+## Usage
+To start the Markurl service, run:
+```sh
+npm start
+```
 
-## Building the Docker Image
+### API Reference
 
-To build the Docker image for the "Markurl" service, navigate to the root directory of the project where the `Dockerfile` is located and run the following command:
+#### Fetching Content in Markdown
+```sh
+curl http://localhost:8080/markdown/main/playwright.dev/python/docs/pages
+```
 
+#### Fetching Content in HTML
+```sh
+curl http://localhost:8080/html/main/playwright.dev/python/docs/pages
+```
 
+**Parameters:**
+- `format`: Either `markdown` or `html`.
+- `selector`: CSS selector to find the main content.
 
-## Running in Docker
+## Docker
+
+### Building the Docker Image
 ```sh
 docker build -t markurl:latest .
 ```
 
-This command builds a Docker image named `markurl` with the tag `latest` based on the instructions in the `Dockerfile`.
-
-## Running the Docker Container
-
-After the image has been successfully built, you can run a container from the image using the following command:
-
+### Running the Docker Container
 ```sh
 docker run -d --name markurl_service -p 8080:8080 markurl:latest
 ```
+Access the service at `http://localhost:8080`.
 
-This command runs the Docker container in detached mode (`-d`), names the container `markurl_service`, maps port 8080 of the container to port 8080 on the host, and uses the `markurl:latest` image.
-
-You can now access the "Markurl" service by navigating to `http://localhost:8080` in your web browser or using a tool like `curl` to interact with the API.
+## License
+This project is licensed under the MIT License.
