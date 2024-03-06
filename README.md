@@ -13,7 +13,7 @@ Markurl is a service designed to fetch the contents of a URL in either Markdown 
 
 ### Cloning the Repository
 ```sh
-git clone https://github.com/yourusername/markurl.git
+git clone https://github.com/ddrscott/markurl.git
 cd markurl
 ```
 
