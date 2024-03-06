@@ -1,0 +1,17 @@
+.chat_history
+# common
+node_modules/
+npm-debug.log
+.env
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+README.md
+LICENSE
+*.md
+*.test.js
+tests/
+coverage/
+.npm/
+.nyc_output/

@@ -1,0 +1,15 @@
+.chat_history
+# common
+node_modules/
+.env
+npm-debug.log
+.DS_Store
+*.log
+coverage/
+dist/
+.cache/
+.vscode/
+*.tmp
+*.swp
+*.swo
+build/
