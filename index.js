@@ -22,23 +22,29 @@ app.get('/:format/:selector/*', async (req, res) => {
     try {
         await page.goto(url);
         await page.waitForLoadState('networkidle');
-        const element = await page.$(selector);
-        // wait for idle javascript
-        if (!element) {
-            await browser.close();
-            return res.status(404).send(`No element found with selector: ${selector}`);
-        }
         if (format === 'markdown') {
+            const element = await page.$(selector);
+            if (!element) {
+                return res.status(404).send(`No element found with selector: ${selector}`);
+            }
             const htmlContent = await element.evaluate(el => el.outerHTML);
             const markdown = turndownService.turndown(htmlContent);
             res.setHeader('Content-Type', 'text/markdown');
             res.send(markdown);
         } else if (format === 'html') {
+            const element = await page.$(selector);
+            if (!element) {
+                return res.status(404).send(`No element found with selector: ${selector}`);
+            }
             const content = await element.evaluate(el => el.outerHTML);
             res.setHeader('Content-Type', 'text/html');
             res.send(content);
+        } else if (format === 'png') {
+            const screenshotBuffer = await page.screenshot({fullPage: true });
+            res.setHeader('Content-Type', 'image/png');
+            res.send(screenshotBuffer);
         } else {
-            res.status(400).send('Invalid format specified. Use "markdown" or "html".');
+            res.status(400).send('Invalid format specified. Use "markdown", "html", or "png".');
         }
     } catch (error) {
         console.error(error);
