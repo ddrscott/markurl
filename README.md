@@ -1,6 +1,8 @@
 # Markurl
 
 > Mar-curl :: sounds like marker + mar-girl. Good luck pronouncing it.
+> -- Scott
+
 Markurl is a service designed to fetch the contents of a URL in either Markdown or HTML format. It utilizes Playwright to render and extract content from web pages, and offers a simple API for users to specify the output format and CSS selector for content extraction.
 
 ## Getting Started

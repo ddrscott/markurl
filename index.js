@@ -21,7 +21,9 @@ app.get('/:format/:selector/*', async (req, res) => {
     const page = await browser.newPage();
     try {
         await page.goto(url);
+        await page.waitForLoadState('networkidle');
         const element = await page.$(selector);
+        // wait for idle javascript
         if (!element) {
             await browser.close();
             return res.status(404).send(`No element found with selector: ${selector}`);
