@@ -57,6 +57,7 @@ curl http://localhost:8080/png/na/playwright.dev/python/docs/pages -o screenshot
 **Parameters:**
 - `format`: Either `markdown`, `html`, or `png`.
 - `selector`: CSS selector to find the main content. (Note: The selector is ignored when fetching a screenshot in PNG format.)
+    - if selector is `read`, Mozilla's Readability library is used to extract the contents.
 
 ## Docker
 

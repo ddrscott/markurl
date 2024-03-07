@@ -5,14 +5,31 @@ const app = express();
 const port = process.env.PORT || 8080;
 const turndownService = new TurndownService();
 
+const { JSDOM } = require('jsdom');
+const { Readability } = require('@mozilla/readability');
+
 let browser; // Declare browser variable in the outer scope
 
 async function launchBrowser() {
     browser = await chromium.launch();
 }
 
+async function extractMainContentWithReadability(page) {
+    console.log('Extracting main content with Readability');
+    // Fetch the page HTML content
+    const htmlContent = await page.content();
+    // Create a JSDOM instance with the fetched HTML content
+    const dom = new JSDOM(htmlContent, {
+        url: page.url(),
+    });
+    // Apply the Readability algorithm
+    const reader = new Readability(dom.window.document);
+    const article = reader.parse();
+    return article.content;
+}
+
 app.get('/:format/:selector/*', async (req, res) => {
-    console.log(`processing request for ${req.params[0]}, ${req.params.selector}, ${req.params.format}`);
+    console.log(`GET ${req.params[0]}, ${req.params.selector}, ${req.params.format}`);
     const { format, selector } = req.params;
     const url = `https://${req.params[0]}`;
     if (!url) {
@@ -23,11 +40,16 @@ app.get('/:format/:selector/*', async (req, res) => {
         await page.goto(url);
         await page.waitForLoadState('networkidle');
         if (format === 'markdown') {
-            const element = await page.$(selector);
-            if (!element) {
-                return res.status(404).send(`No element found with selector: ${selector}`);
+            let htmlContent;
+            if (selector === 'read') {
+                htmlContent = await extractMainContentWithReadability(page);
+            } else {
+                const element = await page.$(selector);
+                if (!element) {
+                    return res.status(404).send(`No element found with selector: ${selector}`);
+                }
+                htmlContent = await element.evaluate(el => el.outerHTML);
             }
-            const htmlContent = await element.evaluate(el => el.outerHTML);
             const markdown = turndownService.turndown(htmlContent);
             res.setHeader('Content-Type', 'text/markdown');
             res.send(markdown);
